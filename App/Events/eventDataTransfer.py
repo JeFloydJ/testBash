@@ -2,6 +2,7 @@ import re
 from simple_salesforce import Salesforce
 import csv
 import os
+import logging
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -9,6 +10,11 @@ load_dotenv()
 current_dir = os.path.dirname(os.path.abspath(__file__))
 BASE_DIR = os.path.dirname(current_dir)
 ABS_PATH = os.path.join(BASE_DIR, "{}")
+
+logging.basicConfig(level=logging.INFO,
+                    format='%(asctime)s - %(levelname)s - %(name)s - %(message)s',
+                    force=True)
+logger = logging.getLogger(__name__)
 
 #parameters: 
 #description: sent information of the csv file to salesforce 
@@ -55,8 +61,9 @@ class SalesforceProcessor:
             instance = instance.split('https://')[1]
         else:
             instance = instance
-        print(instance)
-        print(self.access_token)
+
+        logger.info(instance)
+        logger.info(self.access_token)
         #necessary to make request in salesforce
         self.sf = Salesforce(instance=instance, session_id=self.access_token)
 
