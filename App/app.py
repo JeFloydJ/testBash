@@ -160,6 +160,7 @@ def index():
 #parameters: 
 #description: get data in sky api, after transfer to salesforce
 #return: render the page of the complete data
+@app.route('/transferData', methods=['GET'])
 def transferData():
     # Construir la ruta absoluta al script transferProcess.py
     script_path = ABS_PATH.format('transferProcess.py')
