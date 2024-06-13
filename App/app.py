@@ -106,7 +106,7 @@ def upload():
             except Exception as e:
                 logger.error(f"Error writing to file: {e}")
             return jsonify({'message': 'Successfully saved', 'success': True})
-    return render_template('index.html')
+    return redirect('/')
 
 #parameters: 
 #description: delete csv files
