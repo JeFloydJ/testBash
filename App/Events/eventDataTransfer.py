@@ -59,8 +59,8 @@ class SalesforceProcessor:
         #instance without "https://"
         if 'https://' in instance:
             instance = instance.split('https://')[1]
-        else:
-            instance = instance
+        # else:
+        #     instance = instance
 
         logger.info(instance)
         logger.info(self.access_token)
