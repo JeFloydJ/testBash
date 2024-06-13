@@ -160,11 +160,14 @@ def index():
 #parameters: 
 #description: get data in sky api, after transfer to salesforce
 #return: render the page of the complete data
-@app.route('/transferData', methods=['GET'])
 def transferData():
-    # os.spawnl(os.P_NOWAIT, 'python3 transferProcess.py')
-    subprocess.Popen(['python3', 'transferProcess.py', '&'])
-    #render main page
+    # Construir la ruta absoluta al script transferProcess.py
+    script_path = ABS_PATH.format('transferProcess.py')
+
+    # Ejecutar el script transferProcess.py usando la ruta absoluta
+    subprocess.Popen(['python3', script_path, '&'])
+
+    # Renderizar la página principal
     return {'status': 200}
 
 #parameters: 
