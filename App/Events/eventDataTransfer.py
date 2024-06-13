@@ -57,10 +57,10 @@ class SalesforceProcessor:
             self.instance_url = f.read().strip()
 
         # #instance without "https://"
-        # if 'https://' in instance:
-        #     instance = instance.split('https://')[1]
-        # else:
-        #     instance = instance
+        if 'https://' in self.instance_url:
+            self.instance_url = self.instance_url.split('https://')[1]
+        else:
+            self.instance_url = self.instance_url
 
         # logger.info(instance)
         # logger.info(self.access_token)
