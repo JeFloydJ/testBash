@@ -1,0 +1,20 @@
+#!/bin/bash
+
+# create virtual environment python
+python3 -m venv venv
+
+# Activate virtual environment
+source venv/bin/activate
+
+# install necessary dependencies
+pip install -r requirements.txt
+
+# main directory
+cd App
+
+# directory of test
+cd test
+
+# Run the test for the application
+python3 generateReportCsv.py
+
