@@ -60,10 +60,10 @@ class DataProcessor:
                     first_word = row[last_name_index].split()[0]
                     row[last_name_index] = 'x' + first_word + 'x'
 
-                if row[web_address_index]:
-                    protocol, rest = row[web_address_index].split('//')
-                    domain, path = rest.split('.com', 1)
-                    row[web_address_index] = protocol + '//website.com' + path
+                # if row[web_address_index]:
+                #     protocol, rest = row[web_address_index].split('//')
+                #     domain, path = rest.split('.com', 1)
+                #     row[web_address_index] = protocol + '//website.com' + path
 
                 if '@' in row[email_index]:
                     local, domain = row[email_index].split('@')
