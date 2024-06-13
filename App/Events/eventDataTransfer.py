@@ -55,10 +55,11 @@ class SalesforceProcessor:
             instance = instance.split('https://')[1]
         else:
             instance = instance
-
+        print(instance)
+        print(self.access_token)
         #necessary to make request in salesforce
         self.sf = Salesforce(instance=instance, session_id=self.access_token)
-        
+
         self.organizations_id = self.get_organizations_id() 
         self.households_id = self.get_households_id()
     
