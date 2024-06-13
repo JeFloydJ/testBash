@@ -25,8 +25,8 @@ class SalesforceProcessor:
     #description: info necessary to make a request in salesforce and data for sent to salesforce
     #return: sent information to salesforce
     def __init__(self, report_name):
-        self.client_id = '3MVG9zeKbAVObYjPODek1PYnJW15VxHyhGPUOe1vzfHcg89tL_3Xyj_DCZQql_RL4Gjdnmk7EpfFk4DGDulnz'
-        self.client_secret = '6003041383007768349'  
+        self.client_id = os.getenv("CLIENT_ID_SALESFORCE")
+        self.client_secret = os.getenv("CLIENT_SECRET_SALESFORCE")  
         self.redirect_uri = "http://localhost:8000"
         self.token_url = "https://test.salesforce.com/services/oauth2/token"
         self.report_name = report_name
@@ -64,6 +64,7 @@ class SalesforceProcessor:
 
         logger.info(instance)
         logger.info(self.access_token)
+        
         #necessary to make request in salesforce
         self.sf = Salesforce(instance=instance, session_id=self.access_token)
 
