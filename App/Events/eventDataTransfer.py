@@ -54,19 +54,19 @@ class SalesforceProcessor:
 
         #read instance of the salesforce 
         with open(ABS_PATH.format('salesforce_instance.txt'), 'r') as f:
-            instance = f.read().strip()
+            self.instance_url = f.read().strip()
 
-        #instance without "https://"
-        if 'https://' in instance:
-            instance = instance.split('https://')[1]
+        # #instance without "https://"
+        # if 'https://' in instance:
+        #     instance = instance.split('https://')[1]
         # else:
         #     instance = instance
 
-        logger.info(instance)
-        logger.info(self.access_token)
+        # logger.info(instance)
+        # logger.info(self.access_token)
         
         #necessary to make request in salesforce
-        self.sf = Salesforce(instance=instance, session_id=self.access_token)
+        self.sf = Salesforce(instance_url=self.instance_url, session_id=self.access_token)
 
         self.organizations_id = self.get_organizations_id() 
         self.households_id = self.get_households_id()
