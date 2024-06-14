@@ -62,7 +62,8 @@ token_files = ['altru_token.txt', 'altru_refresh_token.txt', 'salesforce_token.t
 
 # delete the content in each token file 
 for filename in token_files:
-    open(filename, 'w').close()
+    save_path_files = os.path.join(ABS_PATH.format(''), filename)
+    open(save_path_files, 'w').close()
 
 #delete content in each csv and json file
 # for filename in special_files:
@@ -126,28 +127,27 @@ def delete():
 #return: render the page
 @app.route('/')
 def index():
-    #variables for know in wich service is auth
-    # loggedSkyApi = False
+    # Variables para saber en qué servicio está autenticado
     loggedSalesforce = False
     awsData = False
     transferData = False
     transferPage = False
     
     # Si está conectado a Salesforce, la variable es True 
-    with open('App/salesforce_token.txt', 'r') as f:
+    with open(ABS_PATH.format('salesforce_token.txt'), 'r') as f:
         if not isEmpty(f):
             loggedSalesforce = True 
 
     # Si está conectado a Sky Api, la variable es True
-    # with open('App/altru_token.txt', 'r') as f:
+    # with open(ABS_PATH.format('altru_token.txt'), 'r') as f:
     #     if not isEmpty(f):
     #         loggedSkyApi = True
 
-    with open('App/data.txt', 'r') as f:
+    with open(ABS_PATH.format('data.txt'), 'r') as f:
         if not isEmpty(f):
             awsData = True 
 
-    with open('App/finish.txt', 'r') as f:
+    with open(ABS_PATH.format('finish.txt'), 'r') as f:
         if not isEmpty(f):
             transferData = True
 
@@ -155,8 +155,7 @@ def index():
         transferPage = True
  
     # Render the index page
-    return render_template('index.html', transferPage = transferPage, loggedSalesforce = loggedSalesforce, transferData = transferData, awsData = awsData)
-
+    return render_template('index.html', transferPage=transferPage, loggedSalesforce=loggedSalesforce, transferData=transferData, awsData=awsData)
 
 #parameters: 
 #description: get data in sky api, after transfer to salesforce
