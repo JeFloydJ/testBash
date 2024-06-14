@@ -133,23 +133,23 @@ def index():
     transferData = False
     transferPage = False
     
-    #if is logged in salesforce, the variable its True 
-    with open('salesforce_token.txt', 'r') as f:
-        if(not(isEmpty(f))):
+    # Si está conectado a Salesforce, la variable es True 
+    with open('App/salesforce_token.txt', 'r') as f:
+        if not isEmpty(f):
             loggedSalesforce = True 
 
-    #if is logged in Sky Api, the variable its True
-    # with open('altru_token.txt', 'r') as f:
-    #     if(not(isEmpty(f))):
+    # Si está conectado a Sky Api, la variable es True
+    # with open('App/altru_token.txt', 'r') as f:
+    #     if not isEmpty(f):
     #         loggedSkyApi = True
 
-    with open('data.txt', 'r') as f:
-        if(not(isEmpty(f))):
+    with open('App/data.txt', 'r') as f:
+        if not isEmpty(f):
             awsData = True 
 
-    with open('finish.txt', 'r') as f:
-        if(not(isEmpty(f))):
-            transferData = True 
+    with open('App/finish.txt', 'r') as f:
+        if not isEmpty(f):
+            transferData = True
 
     if loggedSalesforce and awsData:
         transferPage = True
