@@ -172,48 +172,6 @@ def transferData():
     return {'status': 200}
 
 #parameters: 
-#description: obtain access tokens when authorizing in altru
-#return: render the page
-@app.route('/skyapi/callback')
-def getSkyApiToken():
-    # Define the service and API
-    service = 'altru'
-    api = 'skyapi'
-    # Parse the URL query
-    query = urllib.parse.urlparse(request.url).query
-    query_components = dict(qc.split("=") for qc in query.split("&") if "=" in qc)
-
-    # If the query contains a code, get the token
-    if "code" in query_components:
-        code = query_components["code"]
-        token_data = {
-            "grant_type": "authorization_code",
-            "code": code,
-            "redirect_uri": redirect_uris[api],
-            "client_id": client_ids[service],
-            "client_secret": client_secrets[service]
-        }
-        token_url = "https://oauth2.sky.blackbaud.com/token"
-        token_response = requests.post(token_url, data=token_data)
-
-        # If the token response is successful, write the tokens to files
-        if token_response.status_code == 200:
-            access_token = token_response.json()["access_token"]
-            refresh_token = token_response.json()["refresh_token"]
-            try:
-                with open(f'{service}_token.txt', 'w') as f:
-                    f.write(access_token)
-                with open(f'{service}_refresh_token.txt', 'w') as f:
-                    f.write(refresh_token)
-            except Exception as e:
-                logger.error(f"Error writing to file: {e}")
-        else:
-            logger.warning(f"Token response error: {token_response.content}")
-    
-    # Return the answer
-    return redirect('/')
-
-#parameters: 
 #description: obtain access tokens when authorizing in salesforce
 #return: render the page
 @app.route('/salesforce/callback')
