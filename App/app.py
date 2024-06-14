@@ -83,7 +83,8 @@ def isEmpty(file):
 def validateToken():
     statusValidator = 404
     try:
-        with open('finish.txt', 'r') as f:
+        file_path = ABS_PATH.format('finish.txt')
+        with open(file_path, 'r') as f:
             statusValidator = 200
     finally:
         return {'status': statusValidator}
