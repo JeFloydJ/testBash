@@ -211,7 +211,7 @@ class SalesforceProcessor:
             'FirstName' : row['First name'],
             'LastName' : row['Last/Organization/Group/Household name'],
             'Auctifera__Implementation_External_ID__c' : row['Lookup ID'],
-            'Description' : row['Notes\\Notes'],
+            #'Description' : row['Notes\\Notes'],
             'GenderIdentity' : row['Gender'],
         }
         if account != '':
@@ -262,13 +262,13 @@ class SalesforceProcessor:
             'npsp__MailingState__c': row['Addresses\\State'],
             'npsp__MailingPostalCode__c': row['Addresses\\ZIP'],
             'npsp__MailingCountry__c': row['Addresses\\Country'],
-            'npsp__Household_Account__c': dic[lookup_id],
+            #'npsp__Household_Account__c': dic[lookup_id],
             'npsp__Default_Address__c' : False if row['Addresses\\Primary address'] != 'Yes' else True,
             'vnfp__Implementation_External_ID__c' : str(str(counter)+ '-' + 'contacts-address' + '-' + 'contacts' +row['QUERYRECID'])
             #'Implementation_External_ID__c' : str(str(counter)+ '-' + 'contacts-address' + '-' + 'contacts' +row['QUERYRECID'])
         }
-        # if lookup_id in dic:
-        #     addresses_info['npsp__Household_Account__c'] = [row['Lookup ID']]
+        if lookup_id in dic:
+            addresses_info['npsp__Household_Account__c'] = [row['Lookup ID']]
 
         self.contacts_address_list.append(addresses_info)
 
