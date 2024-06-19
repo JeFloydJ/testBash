@@ -128,13 +128,12 @@ def delete():
 #return: render the page
 @app.route('/')
 def index():
-    # Variables para saber en qué servicio está autenticado
+ 
     loggedSalesforce = False
     awsData = False
     transferData = False
     transferPage = False
     
-    # Si está conectado a Salesforce, la variable es True 
     with open(ABS_PATH.format('salesforce_token.txt'), 'r') as f:
         if not isEmpty(f):
             loggedSalesforce = True 
@@ -163,13 +162,11 @@ def index():
 #return: render the page of the complete data
 @app.route('/transferData', methods=['GET'])
 def transferData():
-    # Construir la ruta absoluta al script transferProcess.py
+
     script_path = ABS_PATH.format('transferProcess.py')
 
-    # Ejecutar el script transferProcess.py usando la ruta absoluta
     subprocess.Popen(['python3', script_path, '&'])
 
-    # Renderizar la página principal
     return {'status': 200}
 
 #parameters: 
@@ -237,13 +234,10 @@ def getSalesforceToken():
 #return: render the page oh service
 @app.route('/auth/<service>', methods=['GET'])
 def auth(service):
-    # Determine the service and get the authorization URL
     if service == 'altru':
         auth_url = authAltru()
     elif service == 'salesforce':
         auth_url = authSalesforce()
-
-    # Redirect to the authorization URL
     return redirect(auth_url)
 
 

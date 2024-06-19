@@ -5,11 +5,11 @@ current_dir = os.path.dirname(os.path.abspath(__file__))
 BASE_DIR = os.path.dirname(current_dir)
 ABS_PATH = os.path.join(BASE_DIR, "App", "{}")
 
-# Elimina el archivo 'finish.txt' si existe
+# Delete the 'finish.txt' file if it exists
 if os.path.exists('finish.txt'):
     os.remove('finish.txt')
 
-# Lista de nombres de informes con datos necesarios
+# List of report names with necessary data
 report_names = [
     "Veevart Organizations Report test",
     "Veevart Organization Addresses Report test",
@@ -21,13 +21,13 @@ report_names = [
     "Veevart Contacts Report Phones test"
 ]
 
-# Crea una instancia de la clase Adapter
+# Create an instance of the Adapter class
 adapter = Adapter(report_names)
 
-# Procesa los datos y obtiene los resultados
+# Process the data and get the results
 dic_accounts = adapter.process_data()
 
-# Escribe 'finish' en el archivo 'finish.txt'
+# Write 'finish' to the 'finish.txt' file
 finish_path = os.path.join(ABS_PATH.format(''), 'finish.txt')
 with open(finish_path, 'w') as f:
     f.write('finish')
