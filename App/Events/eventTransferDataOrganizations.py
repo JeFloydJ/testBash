@@ -50,7 +50,7 @@ class Adapter:
     #description: Processes data using the DataProcessor and sends address of contacts information to Salesforce
     #return: sent data
     def process_data(self):
-        self.data_processor.process_data()
+        #self.data_processor.process_data()
         for report_name in self.report_names:
             processor = eventDataTransfer.SalesforceProcessor(report_name)  
             processor.process_organizations()
