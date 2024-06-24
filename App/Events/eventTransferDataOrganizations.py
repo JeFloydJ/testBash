@@ -60,6 +60,8 @@ class Adapter:
             dic = processor.process_contacts()
             self.dic_accounts = {**self.dic_accounts, **dic}
             processor.process_contact_address()
+            processor.process_contact_relation()
+
 
 
 

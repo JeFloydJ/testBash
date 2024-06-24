@@ -18,7 +18,8 @@ report_names = [
     "Veevart Contacts Report test",
     "Veevart Contacts Report Address test",
     "Veevart Contacts Report Email test",
-    "Veevart Contacts Report Phones test"
+    "Veevart Contacts Report Phones test",
+    "Veevart Organizations Relationships Report test"
 ]
 
 # Create an instance of the Adapter class

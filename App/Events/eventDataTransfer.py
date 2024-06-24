@@ -47,6 +47,7 @@ class SalesforceProcessor:
         self.houseHolds_external_ids_list = []
         self.households_ids = {}
         self.valid_check = {}
+        self.contacts_relations = []
 
         #read token for make request in salesforce
         with open(ABS_PATH.format('salesforce_token.txt')) as f:
@@ -61,9 +62,6 @@ class SalesforceProcessor:
             instance = instance.split('https://')[1]
         else:
             instance = instance
-
-        logger.info(instance)
-        logger.info(self.access_token)
         
         #necessary to make request in salesforce
         self.sf = Salesforce(instance=instance, session_id=self.access_token)
@@ -118,7 +116,6 @@ class SalesforceProcessor:
         account_info = {
             'RecordTypeId': self.organizations_id,
             'Auctifera__Implementation_External_ID__c': row['Lookup ID'],
-            #'Name': row['"Name"'],
             'Name': row["Name"],
             'Website': row['Web address'],
             #'vnfp__Do_not_Email__c' : False if row['Email Addresses\\Do not email'] != 'Yes' else True,
@@ -296,13 +293,24 @@ class SalesforceProcessor:
         if valid and self.valid_check.get(row['Lookup ID'], None) == None:
             self.contacts_act_email.append(new_info)       
             self.valid_check[row['Lookup ID']] = True
+    
+    def handler_contacts_relationship(self, row):
+        lookup_id = row['Lookup ID']
+        new_info = {
+            'npe4__Contact__r': {'Auctifera__Implementation_External_ID__c': lookup_id},
+            'npe4__RelatedContact__r': {'Auctifera__Implementation_External_ID__c': lookup_id},
+            'npe4__Type__c' : row['Relationships\\Reciprocal relationship type'],
+            'vnfp__Implementation_External_ID__c' : row['QUERYRECID']
+        }
+        self.contacts_relations.append(new_info)
+
 
     #parameters: 
     #description: sent organizations information to salesforce
     #return: sent data
     def process_organizations(self):
         counter = 0
-        with open(ABS_PATH.format(f'data/{self.report_name}.csv'), 'r') as f:
+        with open(ABS_PATH.format(f'data/{self.report_name}.csv'), 'r', encoding='utf-8-sig') as f:
             reader = csv.DictReader(f, delimiter=';')
             for row in reader:
                 if 'Veevart Organizations Report test' == self.report_name: 
@@ -334,7 +342,7 @@ class SalesforceProcessor:
     #return: sent data
     def process_households(self):
         counter = 0
-        with open(ABS_PATH.format(f'data/{self.report_name}.csv'), 'r') as f:
+        with open(ABS_PATH.format(f'data/{self.report_name}.csv'), 'r', encoding='utf-8-sig') as f:
             reader = csv.DictReader(f, delimiter=';')
             for row in reader:
                 counter += 1
@@ -358,7 +366,7 @@ class SalesforceProcessor:
     #return: sent data
     def process_contacts(self):
         counter = 0
-        with open(ABS_PATH.format(f'data/{self.report_name}.csv'), 'r') as f:
+        with open(ABS_PATH.format(f'data/{self.report_name}.csv'), 'r', encoding='utf-8-sig') as f:
             reader = csv.DictReader(f, delimiter=';')
             for row in reader:
                 counter += 1
@@ -397,7 +405,7 @@ class SalesforceProcessor:
     #description: sent address of contacts information to salesforce
     #return: sent data
     def process_contact_address(self):
-        with open(ABS_PATH.format(f'data/{self.report_name}.csv'), 'r') as f:
+        with open(ABS_PATH.format(f'data/{self.report_name}.csv'), 'r', encoding='utf-8-sig') as f:
             counter = 0
             reader = csv.DictReader(f, delimiter=';')
             for row in reader:
@@ -408,15 +416,28 @@ class SalesforceProcessor:
         if self.contacts_address_list:
             self.sf.bulk.npsp__Address__c.upsert(self.contacts_address_list, 'vnfp__Implementation_External_ID__c', batch_size='auto',use_serial=True)  
 
-# report_names = ["Veevart Organizations Report test","Veevart Organization Addresses Report test", "Veevart Organization Phones Report test", "Veevart HouseHolds Report test", "Veevart Contacts Report test", "Veevart Contacts Report Address test", "Veevart Contacts Report Email test", "Veevart Contacts Report Email test", "Veevart Contacts Report Phones test"]
+    def process_contact_relation(self):
+        with open(ABS_PATH.format(f'data/{self.report_name}.csv'), 'r', encoding='utf-8-sig') as f:
+            reader = csv.DictReader(f, delimiter=';')
+            for row in reader:
+                if 'Veevart Organizations Relationships Report test' == self.report_name:
+                    self.handler_contacts_relationship(row)
+                    
+        if self.contacts_relations:
+            self.sf.bulk.npe4__Relationship__c.upsert(self.contacts_relations, 'vnfp__Implementation_External_ID__c', batch_size='auto',use_serial=True)
+
+
+# report_names = ["Veevart Organizations Report test","Veevart Organization Addresses Report test", "Veevart Organization Phones Report test", "Veevart HouseHolds Report test", "Veevart Contacts Report test", "Veevart Contacts Report Address test", "Veevart Contacts Report Email test", "Veevart Contacts Report Phones test", "Veevart Organizations Relationships Report test"]
 # dic_accounts = {}
 # dic_households_ids = {}
 # for report_name in report_names:
-#     processor = SalesforceProcessor(report_name, os.getenv('BUCKET_NAME'))  
+#     processor = SalesforceProcessor(report_name)  
 #     processor.process_organizations()
 #     processor.process_households()
+#     # dic_households_ids = {dic_households_ids, **processor.process_households_ids()}
 #     dic_households_ids = {**dic_households_ids, **processor.process_households_ids()}
 #     processor.households_ids = dic_households_ids
 #     dic = processor.process_contacts()
 #     dic_accounts = {**dic_accounts, **dic}
 #     processor.process_contact_address()
+#     processor.process_contact_relation()
