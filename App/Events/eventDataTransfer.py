@@ -48,6 +48,7 @@ class SalesforceProcessor:
         self.households_ids = {}
         self.valid_check = {}
         self.contacts_relations = []
+        self.organizations_affilations = []
 
         #read token for make request in salesforce
         with open(ABS_PATH.format('salesforce_token.txt')) as f:
@@ -304,6 +305,17 @@ class SalesforceProcessor:
         }
         self.contacts_relations.append(new_info)
 
+    def handler_organization_affilation(self, row):
+        contact_lookup_id = row['Lookup ID']
+        organization_lookup_id = row['Relationships\\Related Constituent\\Lookup ID']
+        new_info = {
+            'npe5__Contact__r' : {'Auctifera__Implementation_External_ID__c': contact_lookup_id},
+            'npe5__Organization__r' : {'Auctifera__Implementation_External_ID__c': organization_lookup_id},
+            'npe5__Primary__c' : False if row['Relationships\\Is primary contact'] != 'Yes' else True,
+            'npe5__Role__c' : row['Relationships\\Reciprocal relationship type'],
+            'vnfp__Implementation_External_ID__c' : row['QUERYRECID']
+        }
+        self.organizations_affilations.append(new_info)
 
     #parameters: 
     #description: sent organizations information to salesforce
@@ -420,24 +432,35 @@ class SalesforceProcessor:
         with open(ABS_PATH.format(f'data/{self.report_name}.csv'), 'r', encoding='utf-8-sig') as f:
             reader = csv.DictReader(f, delimiter=';')
             for row in reader:
-                if 'Veevart Organizations Relationships Report test' == self.report_name:
+                if 'Veevart Contacts Relationships report test' == self.report_name:
                     self.handler_contacts_relationship(row)
                     
         if self.contacts_relations:
             self.sf.bulk.npe4__Relationship__c.upsert(self.contacts_relations, 'vnfp__Implementation_External_ID__c', batch_size='auto',use_serial=True)
 
+    def process_organization_affilation(self):
+        with open(ABS_PATH.format(f'data/{self.report_name}.csv'), 'r', encoding='utf-8-sig') as f:
+            reader = csv.DictReader(f, delimiter=';')
+            for row in reader:
+                if 'Veevart Organizations Relationships report test' == self.report_name:
+                    self.handler_organization_affilation(row)
+                
+        if self.organizations_affilations:
+             self.sf.bulk.npe5__Affiliation__c.upsert(self.organizations_affilations , 'vnfp__Implementation_External_ID__c', batch_size='auto',use_serial=True)
 
-# report_names = ["Veevart Organizations Report test","Veevart Organization Addresses Report test", "Veevart Organization Phones Report test", "Veevart HouseHolds Report test", "Veevart Contacts Report test", "Veevart Contacts Report Address test", "Veevart Contacts Report Email test", "Veevart Contacts Report Phones test", "Veevart Organizations Relationships Report test"]
+
+# report_names = ["Veevart Organizations Report test","Veevart Organization Addresses Report test", "Veevart Organization Phones Report test", "Veevart HouseHolds Report test", "Veevart Contacts Report test", "Veevart Contacts Report Address test", "Veevart Contacts Report Email test", "Veevart Contacts Report Phones test","Veevart Contacts Relationships report test", "Veevart Organizations Relationships report test"]
 # dic_accounts = {}
 # dic_households_ids = {}
 # for report_name in report_names:
 #     processor = SalesforceProcessor(report_name)  
-#     processor.process_organizations()
-#     processor.process_households()
-#     # dic_households_ids = {dic_households_ids, **processor.process_households_ids()}
-#     dic_households_ids = {**dic_households_ids, **processor.process_households_ids()}
-#     processor.households_ids = dic_households_ids
-#     dic = processor.process_contacts()
-#     dic_accounts = {**dic_accounts, **dic}
-#     processor.process_contact_address()
+# #     processor.process_organizations()
+# #     processor.process_households()
+# #     # dic_households_ids = {dic_households_ids, **processor.process_households_ids()}
+# #     dic_households_ids = {**dic_households_ids, **processor.process_households_ids()}
+# #     processor.households_ids = dic_households_ids
+# #     dic = processor.process_contacts()
+# #     dic_accounts = {**dic_accounts, **dic}
+#     # processor.process_contact_address()
 #     processor.process_contact_relation()
+#     processor.process_organization_affilation()

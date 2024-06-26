@@ -61,6 +61,7 @@ class Adapter:
             self.dic_accounts = {**self.dic_accounts, **dic}
             processor.process_contact_address()
             processor.process_contact_relation()
+            processor.process_organization_affilation()
 
 
 
