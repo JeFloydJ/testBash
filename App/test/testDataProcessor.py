@@ -51,7 +51,7 @@ class TestDataProcessor(unittest.TestCase):
         with open('test_input.csv', 'w', newline='') as f:
             writer = csv.writer(f, delimiter=';')
             writer.writerow(['Name', 'Last/Organization/Group/Household name', 'Email Addresses\\Email address', 'Web address'])
-            writer.writerow(['John Doe', 'Smith Family', 'john@example.com', 'http://example.com/page'])
+            writer.writerow(['John Doe', 'Smith Family', 'john@example.com', 'http://website.com/page'])
 
         self.data_processor.modify_csv_names('test_input.csv', 'test_output.csv')
 
