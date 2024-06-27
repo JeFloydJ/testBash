@@ -51,9 +51,9 @@ class TestSalesforceProcessor(unittest.TestCase):
         result = self.processor.get_organizations_id()
         self.assertEqual(result, 'test_id')
 
-    #parameters: 
-    #description: sget accounts id
-    #return: result of the test
+    # #parameters: 
+    # #description: sget accounts id
+    # #return: result of the test
     def test_get_account_id(self):
     
         mock_response = {'records': [{'Auctifera__Implementation_External_ID__c': 'test_id', 'AccountId': 'test_account_id'}]}
@@ -65,17 +65,17 @@ class TestSalesforceProcessor(unittest.TestCase):
         
         self.assertEqual(result, {'test_id': 'test_account_id'})
     
-    #parameters: 
-    #description: test extract code to string (123-householdsa-test_id)
-    #return: result of the test
+    # #parameters: 
+    # #description: test extract code to string (123-householdsa-test_id)
+    # #return: result of the test
     def test_find_households_id(self):
         lst = ['123-households-test_id']
         result = self.processor.find_households_id(lst)
         self.assertEqual(result, {'test_id': '123-households-test_id'})
 
-    #parameters: 
-    #description: test create organization object
-    #return: result of the test
+    # #parameters: 
+    # #description: test create organization object
+    # #return: result of the test
     def test_handle_organizations_report(self):
         row = {
             "Lookup ID": "test_id",
@@ -87,9 +87,9 @@ class TestSalesforceProcessor(unittest.TestCase):
         self.processor.handle_organizations_report(row)
         self.assertEqual(self.processor.account_list[0]['Auctifera__Implementation_External_ID__c'], 'test_id')
 
-    #parameters: 
-    #description: test create organization address object
-    #return: result of the test
+    # #parameters: 
+    # #description: test create organization address object
+    # #return: result of the test
     def test_handle_organization_addresses_report(self):
         row = {
             "Lookup ID": "test_id",
@@ -104,9 +104,9 @@ class TestSalesforceProcessor(unittest.TestCase):
         self.processor.handle_organization_addresses_report(row, 1)
         self.assertEqual(self.processor.address_list[0]['npsp__MailingStreet__c'], 'test_address')
 
-    #parameters: 
-    #description: test organization phone object
-    #return: result of the test
+    # #parameters: 
+    # #description: test organization phone object
+    # #return: result of the test
     def test_handle_organization_phone_report(self):
   
         counter = 1  
@@ -124,9 +124,9 @@ class TestSalesforceProcessor(unittest.TestCase):
         self.assertEqual(self.processor.phone_list[0]['vnfp__Type__c'], "Phone")
         self.assertEqual(self.processor.phone_list[0]['vnfp__Account__r'], {'Auctifera__Implementation_External_ID__c': 'test_id'})
 
-    #parameters: 
-    #description: test phone update in account object
-    #return: result of the test
+    # #parameters: 
+    # #description: test phone update in account object
+    # #return: result of the test
     def test_handler_update_phone_organization(self):
 
         row = {
@@ -146,9 +146,9 @@ class TestSalesforceProcessor(unittest.TestCase):
             
             self.assertEqual(len(self.processor.phone_act_list), 0)
 
-    #parameters: 
-    #description: test update address in account object
-    #return: result of the test
+    # #parameters: 
+    # #description: test update address in account object
+    # #return: result of the test
     def test_handler_update_address_organization(self):
 
         row = {
@@ -176,9 +176,9 @@ class TestSalesforceProcessor(unittest.TestCase):
           
             self.assertEqual(len(self.processor.address_act_list), 0)
 
-    #parameters: 
-    #description: test create household obejct
-    #return: result of the test            
+    # #parameters: 
+    # #description: test create household obejct
+    # #return: result of the test            
     def test_handler_households(self):
 
         row = {
@@ -195,9 +195,9 @@ class TestSalesforceProcessor(unittest.TestCase):
         self.assertEqual(self.processor.houseHolds_list[0]['Auctifera__Implementation_External_ID__c'], "1-households-123")
         self.assertEqual(self.processor.houseHolds_list[0]['Name'], "Test Name")
 
-    #parameters: 
-    #description: test create contact object
-    #return: result of the test
+    # #parameters: 
+    # #description: test create contact object
+    # #return: result of the test
     def test_handler_contacts_report(self):
 
         row = {
@@ -224,9 +224,9 @@ class TestSalesforceProcessor(unittest.TestCase):
         self.assertEqual(self.processor.contacts_list[0]['GenderIdentity'], "Test Gender")
         self.assertEqual(self.processor.contacts_list[0]['Account'], {'Auctifera__Implementation_External_ID__c': 'test_account_external_id'})
 
-    #parameters: 
-    #description: test create phone in contact object
-    #return: result of the test
+    # #parameters: 
+    # #description: test create phone in contact object
+    # #return: result of the test
     def test_handle_contacts_phone_report(self):
         row = {
             "Lookup ID": "test_id",
@@ -244,9 +244,9 @@ class TestSalesforceProcessor(unittest.TestCase):
         self.assertEqual(self.processor.contacts_phones_list[0]['vnfp__Contact__r'], {'Auctifera__Implementation_External_ID__c': 'test_id'})
         self.assertEqual(self.processor.contacts_phones_list[0]['vnfp__Implementation_External_ID__c'], "1-phone-456")
 
-    #parameters: 
-    #description: test contact create email in contact object
-    #return: result of the test
+    # #parameters: 
+    # #description: test contact create email in contact object
+    # #return: result of the test
     def test_handle_contacts_emails_report(self):
         row = {
             "Lookup ID": "test_id",
@@ -263,9 +263,9 @@ class TestSalesforceProcessor(unittest.TestCase):
         self.assertEqual(self.processor.contacts_emails_list[0]['vnfp__Contact__r'], {'Auctifera__Implementation_External_ID__c': 'test_id'})
         self.assertEqual(self.processor.contacts_emails_list[0]['vnfp__Implementation_External_ID__c'], "1-contacts-email-456")
  
-    #parameters: 
-    #description: test create address object in contact object
-    #return: result of the test
+    # #parameters: 
+    # #description: test create address object in contact object
+    # #return: result of the test
     def test_handle_contacts_addresses_report(self):
         row = {
             "Lookup ID": "test_id",
@@ -295,9 +295,9 @@ class TestSalesforceProcessor(unittest.TestCase):
         self.assertEqual(self.processor.contacts_address_list[0]['npsp__Default_Address__c'], True)
         self.assertEqual(self.processor.contacts_address_list[0]['vnfp__Implementation_External_ID__c'], "1-contacts-address-contacts456")
  
-    #parameters: 
-    #description: test update phone in contact object
-    #return: result of the test
+    # #parameters: 
+    # #description: test update phone in contact object
+    # #return: result of the test
     def test_handle_contacts_update_phone(self):
 
         row = {
@@ -314,9 +314,9 @@ class TestSalesforceProcessor(unittest.TestCase):
         else:
             self.assertEqual(len(self.processor.contacts_act_phone), 1)
 
-    #parameters: 
-    #description: test create update email in contact object
-    #return: result of the test
+    # #parameters: 
+    # #description: test create update email in contact object
+    # #return: result of the test
     def test_handle_contacts_update_email(self):
         row = {
             "Lookup ID": "test_id",
@@ -332,11 +332,47 @@ class TestSalesforceProcessor(unittest.TestCase):
         else:
             self.assertEqual(len(self.processor.contacts_act_email), 1)
 
-    #parameters: 
-    #description: test create objects  and sent organization data to salesforce 
-    #return: result of the test
+    def test_handler_contacts_relationship(self):
+        row = {
+            "Contact Record ID": "123",
+            "Related Contact Record ID": "123",
+            "Type": "Type",
+            "Lookup ID": "123",  # Asegúrate de usar el valor correcto para 'Lookup ID'
+            "Relationships\\Reciprocal relationship type": "type",
+            "QUERYRECID": "123aaabbbccc"
+        }
+        
+        # Llamamos al método para procesar el row
+        self.processor.handler_contacts_relationship(row)
+        
+
+        
+        self.assertEqual(self.processor.contacts_relations[0]['npe4__Contact__r']['Auctifera__Implementation_External_ID__c'], '123')
+        self.assertEqual(self.processor.contacts_relations[0]['npe4__RelatedContact__r']['Auctifera__Implementation_External_ID__c'], '123')
+        self.assertEqual(self.processor.contacts_relations[0]['npe4__Type__c'], "type")
+
+    def test_handler_organization_affilation(self):
+        row = {
+            "Lookup ID": "contact_id",
+            "Relationships\\Related Constituent\\Lookup ID": "organization_id",
+            "Relationships\\Is primary contact": "Yes",
+            "Relationships\\Reciprocal relationship type": "type",
+            "QUERYRECID": "123aaabbbccc"
+        }
+        
+        self.processor.handler_organization_affilation(row)
+        
+        self.assertEqual(self.processor.organizations_affilations[0]['npe5__Contact__r'], {'Auctifera__Implementation_External_ID__c': 'contact_id'})
+        self.assertEqual(self.processor.organizations_affilations[0]['npe5__Organization__r'], {'Auctifera__Implementation_External_ID__c': 'organization_id'})
+        self.assertEqual(self.processor.organizations_affilations[0]['npe5__Primary__c'], True)  # Adjust based on your logic
+        self.assertEqual(self.processor.organizations_affilations[0]['npe5__Role__c'], "type")
+
+    # #parameters: 
+    # #description: test create objects  and sent organization data to salesforce 
+    # #return: result of the test
     @patch('csv.DictReader')
-    def test_process_organizations(self, mock_dict_reader):
+    @patch('builtins.open', new_callable=mock_open, read_data="Lookup ID,Name,Web address,Phones\\Number,Addresses\\Address,Addresses\\City,Addresses\\State,Addresses\\ZIP,Addresses\\Country,Addresses\\Primary address,Email Addresses\\Email address,Email Addresses\\Do not email,QUERYRECID\n")
+    def test_process_organizations(self, mock_open, mock_dict_reader):
 
         row = {
             "Lookup ID": "test_id",
@@ -352,7 +388,8 @@ class TestSalesforceProcessor(unittest.TestCase):
             "Email Addresses\\Email address": "",  
             "Email Addresses\\Do not email": "",
             "QUERYRECID": "456"
-            }
+        }
+        
         self.processor.report_name = 'Veevart Organizations Report test'
         
         mock_dict_reader.return_value = [row]
@@ -361,11 +398,13 @@ class TestSalesforceProcessor(unittest.TestCase):
         
         self.processor.sf.bulk.Account.upsert.assert_called_once_with(self.processor.account_list, 'Auctifera__Implementation_External_ID__c', batch_size='auto', use_serial=True)
 
-    #parameters: 
-    #description: test create objects and sent household data to salesforce 
-    #return: result of the test
+    # #parameters: 
+    # #description: test create objects and sent household data to salesforce 
+    # #return: result of the test
     @patch('csv.DictReader')
-    def test_process_households(self, mock_dict_reader):
+    @patch('builtins.open', new_callable=mock_open, read_data="Lookup ID,Name,Web address,Phones\\Number,Addresses\\Address,Addresses\\City,Addresses\\State,Addresses\\ZIP,Addresses\\Country,Addresses\\Primary address,Email Addresses\\Do not email,QUERYRECID\n"
+                                                            "test_id,Test Name,www.test.com,123,123 Street,Test City,Test State,12345,Test Country,Yes,,456")
+    def test_process_households(self, mock_open, mock_dict_reader):
         row = {
             "Lookup ID": "test_id",
             "Name": "Test Name",
@@ -391,9 +430,9 @@ class TestSalesforceProcessor(unittest.TestCase):
         
         self.assertEqual(result, self.processor.houseHolds_external_ids_list)
 
-    #parameters: 
-    #description: test extract households id 
-    #return: result of the test
+    # #parameters: 
+    # #description: test extract households id 
+    # #return: result of the test
     def test_process_households_ids(self):
         self.processor.houseHolds_external_ids_list = ['123-households-test_id']
         
@@ -401,11 +440,14 @@ class TestSalesforceProcessor(unittest.TestCase):
         
         self.assertEqual(result, {'test_id': '123-households-test_id'})
 
-    #parameters: 
-    #description: test create objects  and sent contacts data to salesforce 
-    #return: result of the test
+    # #parameters: 
+    # #description: test create objects  and sent contacts data to salesforce 
+    # #return: result of the test
+    # @patch('csv.DictReader')
     @patch('csv.DictReader')
-    def test_process_contacts(self, mock_dict_reader):
+    @patch('builtins.open', new_callable=mock_open, read_data="Lookup ID,Name,Web address,Phones\\Number,Addresses\\Address,Addresses\\City,Addresses\\State,Addresses\\ZIP,Addresses\\Country,Addresses\\Primary address,Email Addresses\\Do not email,Households Belonging To\\Household Record ID,First name,Title,Last/Organization/Group/Household name,Notes\\Notes,GenderIdentity,Gender,QUERYRECID\n"
+                                                             "test_id,Test Name,www.test.com,123,123 Street,Test City,Test State,12345,Test Country,True,,test_household_id,Test First Name,Mr.,test householdsname,nota test,Male,Male,456")
+    def test_process_contacts(self, mock_open, mock_dict_reader):
         row = {
             "Lookup ID": "test_id",
             "Name": "Test Name",
@@ -420,11 +462,11 @@ class TestSalesforceProcessor(unittest.TestCase):
             "Email Addresses\\Do not email": "",
             "Households Belonging To\\Household Record ID": "test_household_id",
             "First name": "Test First Name",
-            "Title" : "Mr.",
-            "Last/Organization/Group/Household name" : "test householdsname",
-            "Notes\\Notes" : "nota test",
-            "GenderIdentity" : "Male",
-            "Gender" : "Male",
+            "Title": "Mr.",
+            "Last/Organization/Group/Household name": "test householdsname",
+            "Notes\\Notes": "nota test",
+            "GenderIdentity": "Male",
+            "Gender": "Male",
             "QUERYRECID": "456"
         }
         
@@ -440,11 +482,13 @@ class TestSalesforceProcessor(unittest.TestCase):
         
         self.assertEqual(result, self.processor.contacts_accounts_id)
 
-    #parameters: 
-    #description: test create objects and sent address of organization data to salesforce 
-    #return: result of the test
+    # #parameters: 
+    # #description: test create objects and sent address of organization data to salesforce 
+    # #return: result of the test
     @patch('csv.DictReader')
-    def test_process_contact_address(self, mock_dict_reader):
+    @patch('builtins.open', new_callable=mock_open, read_data="Lookup ID,Name,Web address,Phones\\Number,Addresses\\Address,Addresses\\City,Addresses\\State,Addresses\\ZIP,Addresses\\Country,Addresses\\Primary address,Email Addresses\\Do not email,Households Belonging To\\Household Record ID,First name,Title,Last/Organization/Group/Household name,Notes\\Notes,GenderIdentity,Gender,QUERYRECID\n"
+                                                             "test_id,Test Name,www.test.com,123,123 Street,Test City,Test State,12345,Test Country,True,,test_household_id,Test First Name,Mr.,test householdsname,nota test,Male,Male,456")
+    def test_process_contact_address(self, mock_open, mock_dict_reader):
         row = {
             "Lookup ID": "test_id",
             "Name": "Test Name",
@@ -459,11 +503,11 @@ class TestSalesforceProcessor(unittest.TestCase):
             "Email Addresses\\Do not email": "",
             "Households Belonging To\\Household Record ID": "test_household_id",
             "First name": "Test First Name",
-            "Title" : "Mr.",
-            "Last/Organization/Group/Household name" : "test householdsname",
-            "Notes\\Notes" : "nota test",
-            "GenderIdentity" : "Male",
-            "Gender" : "Male",
+            "Title": "Mr.",
+            "Last/Organization/Group/Household name": "test householdsname",
+            "Notes\\Notes": "nota test",
+            "GenderIdentity": "Male",
+            "Gender": "Male",
             "QUERYRECID": "456"
         }
         
@@ -476,6 +520,60 @@ class TestSalesforceProcessor(unittest.TestCase):
         self.processor.process_contact_address()
 
         self.processor.sf.bulk.npsp__Address__c.upsert.assert_called_once_with(self.processor.contacts_address_list, 'vnfp__Implementation_External_ID__c', batch_size='auto', use_serial=True)
+
+    @patch('csv.DictReader')
+    @patch('builtins.open', new_callable=mock_open, read_data="Lookup ID,Relationships\\Related Constituent\\Lookup ID,Relationships\\Is primary contact,QUERYRECID\n"
+                                                             "contact_id,related_contact_id,Yes,123aaabbbccc")
+    def test_process_contact_relation(self, mock_open, mock_dict_reader):
+        row = {
+            "Lookup ID": "contact_id",
+            "Relationships\\Related Constituent\\Lookup ID": "related_contact_id",
+            "Relationships\\Is primary contact": "Yes",
+            "QUERYRECID": "123aaabbbccc",
+            "Relationships\\Reciprocal relationship type" : "type"
+        }
+        
+        self.processor.report_name = 'Veevart Contacts Relationships report test'
+        
+        mock_dict_reader.return_value = [row]
+        
+        # Llama al método que deseas probar
+        self.processor.process_contact_relation()
+
+        # Verifica que la operación de actualización se haya llamado correctamente
+        self.processor.sf.bulk.npe4__Relationship__c.upsert.assert_called_once_with(
+            self.processor.contacts_relations,
+            'vnfp__Implementation_External_ID__c',
+            batch_size='auto',
+            use_serial=True
+        )
+
+    @patch('csv.DictReader')
+    @patch('builtins.open', new_callable=mock_open, read_data="Lookup ID,Relationships\\Related Constituent\\Lookup ID,Relationships\\Is primary contact,QUERYRECID\n"
+                                                             "contact_id,related_contact_id,Yes,123aaabbbccc")
+    def test_process_organization_affiliation(self, mock_open, mock_dict_reader):
+        row = {
+            "Lookup ID": "contact_id",
+            "Relationships\\Related Constituent\\Lookup ID": "related_contact_id",
+            "Relationships\\Is primary contact": "Yes",
+            "QUERYRECID": "123aaabbbccc",
+            "Relationships\\Reciprocal relationship type": "type"
+        }
+        
+        self.processor.report_name = 'Veevart Organizations Relationships report test'
+        
+        mock_dict_reader.return_value = [row]
+        
+        # Llama al método que deseas probar
+        self.processor.process_organization_affilation()
+
+        # Verifica que la operación de actualización se haya llamado correctamente
+        self.processor.sf.bulk.npe5__Affiliation__c.upsert.assert_called_once_with(
+            self.processor.organizations_affilations,
+            'vnfp__Implementation_External_ID__c',
+            batch_size='auto',
+            use_serial=True
+        )
 
 if __name__ == '__main__':
     unittest.main()
