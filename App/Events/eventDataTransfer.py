@@ -119,6 +119,7 @@ class SalesforceProcessor:
             'Auctifera__Implementation_External_ID__c': row['Lookup ID'],
             'Name': row["Name"],
             'Website': row['Web address'],
+            #'npsp__Household_Account__c':row['Households Belonging To\\Household Record ID']
             #'vnfp__Do_not_Email__c' : False if row['Email Addresses\\Do not email'] != 'Yes' else True,
         }
         if row['Email Addresses\\Email address'] != '':
@@ -327,27 +328,27 @@ class SalesforceProcessor:
             for row in reader:
                 if 'Veevart Organizations Report test' == self.report_name: 
                     self.handle_organizations_report(row)
-                elif 'Veevart Organization Phones Report test' == self.report_name: 
-                    self.handle_organization_phone_report(row,counter)
-                    self.handler_update_phone_organization(row)
-                elif 'Veevart Organization Addresses Report test' == self.report_name:
-                    self.handle_organization_addresses_report(row,counter)
-                    self.handler_update_address_organization(row)
-
+                # elif 'Veevart Organization Phones Report test' == self.report_name: 
+                #     self.handle_organization_phone_report(row,counter)
+                #     self.handler_update_phone_organization(row)
+                # elif 'Veevart Organization Addresses Report test' == self.report_name:
+                #     self.handle_organization_addresses_report(row,counter)
+                #     self.handler_update_address_organization(row)
+  
         if self.account_list:
             self.sf.bulk.Account.upsert(self.account_list, 'Auctifera__Implementation_External_ID__c', batch_size='auto',use_serial=True)  
             
-        if self.phone_list:
-            self.sf.bulk.vnfp__Legacy_Data__c.upsert(self.phone_list, 'vnfp__Implementation_External_ID__c', batch_size='auto',use_serial=True)
+        # if self.phone_list:
+        #     self.sf.bulk.vnfp__Legacy_Data__c.upsert(self.phone_list, 'vnfp__Implementation_External_ID__c', batch_size='auto',use_serial=True)
             
-        if self.address_list:
-            self.sf.bulk.npsp__Address__c.upsert(self.address_list, 'vnfp__Implementation_External_ID__c', batch_size='auto',use_serial=True)
+        # if self.address_list:
+        #     self.sf.bulk.npsp__Address__c.upsert(self.address_list, 'vnfp__Implementation_External_ID__c', batch_size='auto',use_serial=True)
 
-        if self.phone_act_list:
-            self.sf.bulk.Account.upsert(self.phone_act_list, 'Auctifera__Implementation_External_ID__c', batch_size='auto',use_serial=True)
+        # if self.phone_act_list:
+        #     self.sf.bulk.Account.upsert(self.phone_act_list, 'Auctifera__Implementation_External_ID__c', batch_size='auto',use_serial=True)
             
-        if self.address_act_list:
-            self.sf.bulk.Account.upsert(self.address_act_list, 'Auctifera__Implementation_External_ID__c', batch_size='auto',use_serial=True) 
+        # if self.address_act_list:
+        #     self.sf.bulk.Account.upsert(self.address_act_list, 'Auctifera__Implementation_External_ID__c', batch_size='auto',use_serial=True) 
 
     #parameters: 
     #description: sent households information to salesforce

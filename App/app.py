@@ -81,13 +81,23 @@ def isEmpty(file):
 #return: status of process to sent data
 @app.route('/Validator') 
 def validateToken():
-    statusValidator = 404
     try:
-        file_path = ABS_PATH.format('finish.txt')
-        with open(file_path, 'r') as f:
-            statusValidator = 200
-    finally:
-        return {'status': statusValidator}
+        # Check if the finish file exists
+        finish_path = ABS_PATH.format('finish.txt')
+        if os.path.exists(finish_path):
+            return jsonify({'status': 200})
+
+        # Check if the error file exists
+        error_path = ABS_PATH.format('error.txt')
+        if os.path.exists(error_path):
+            with open(error_path, 'r') as f:
+                error_message = f.read()
+            return jsonify({'status': 'error', 'message': error_message})
+        
+        # If neither file exists, the process is still running
+        return jsonify({'status': 'in_progress'})
+    except Exception as e:
+        return jsonify({'status': 'error', 'message': str(e)}), 500
 
 #parameters: 
 #description: add csv files to project 

@@ -5,11 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Data Loader</title>
     <link rel="stylesheet" href="{{ url_for('static', filename = 'css/index.css')}}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="{{url_for('static', filename='scripts/loading.js')}}"></script>
     <script src="{{url_for('static', filename='scripts/formAction.js')}}"></script>
     <script src="{{url_for('static', filename='scripts/alertMessage.js')}}"></script>
-    <script src="{{url_for('static', filename='scripts/uploadMessage.js')}}"></script>
 </head>
 <body>
     <div class="login-container">
@@ -75,9 +75,14 @@
             </div>
         </div>        
         {% endif %}
+
     <div id="loading" style="display: none;">
-        <h2>Transfiriendo datos a Salesforce...</h2>
-        <div id="progress">0%</div> 
+        <div class="spinner-container">
+            <i class="fas fa-spinner fa-spin"></i>
+            <h2>Transfiriendo datos a Salesforce...</h2>
+            <h2> esto puede tomar un tiempo ...</h2> 
+        </div>
     </div>
+
 </body>
 </html>
