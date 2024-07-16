@@ -1,26 +1,34 @@
-var retryCount = 0; //retry counter
-const maxRetries = 30; //max number of retry
-const baseDelay = 500; //initial delay
+var retryCount = 0; // retry counter
+const maxRetries = 30; // max number of retries
+const baseDelay = 500; // initial delay
 
 function startTransfer() {
     $('#loading').show(); // show view in loading page
-    var progress = 0; //set progress in 0%
+    var progress = 0; // set progress to 0%
     var interval = setInterval(function() {
-        progress += 1; // increment process in +1
+        progress += 1; // increment progress by 1
         $('#progress').text(progress + '%'); // update progress text
 
-        // if progress is greather than 100
+        // if progress is greater than 100
         if (progress >= 100) clearInterval(interval);
-    }, 2000); // Actualiza el progreso cada 2 segundos
+    }, 2000); // Update progress every 2 seconds
 
-    $.ajax({ //start polling
+    $.ajax({ // start polling
         url: '/transferData',
         type: 'GET',
         success: function(response) {
-            console.log(response, interval)
-            if (response.status == 200) {
+            if (response.status === 200) {
                 setTimeout(function() { pollServer(interval); }, baseDelay);
-            } 
+            } else {
+                clearInterval(interval);
+                $('#loading').hide();
+                alert('Error starting the transfer process: ' + response.message);
+            }
+        },
+        error: function(xhr, status, error) {
+            clearInterval(interval);
+            $('#loading').hide();
+            alert('Error starting the transfer process: ' + xhr.responseText);
         }
     });  
 }
@@ -30,24 +38,28 @@ function pollServer(interval) {
         url: '/Validator',
         type: 'GET',
         success: function(response) {
-            if (response.status == 200) {
+            if (response.status === 200) {
                 clearInterval(interval); // stop the interval when data transfer is finished
-                $('#loading').hide(); // hidden view of loading
-                location.href = '/'; //redirect main page
-                retryCount = 0; // set counter of retrys
-            } else {
-                // if transfer is not complete , send request to server
+                $('#loading').hide(); // hide the loading view
+                location.href = '/'; // redirect to main page
+                retryCount = 0; // reset retry counter
+            } else if (response.status === 'in_progress') {
+                // if transfer is not complete, send request to server
                 if (retryCount < maxRetries) {
                     retryCount++;
-                    const delay = baseDelay * Math.pow(2, retryCount); //increment exponential retry
+                    const delay = baseDelay * Math.pow(2, retryCount); // increment exponential retry
                     setTimeout(function() { pollServer(interval); }, delay);
                 }
+            } else if (response.status === 'error') {
+                clearInterval(interval); // stop interval if there's an error
+                $('#loading').hide(); // hide loading view
+                alert('Error during data transfer: ' + response.message); // show error message
             }
         },
-        error: function(error) {
-            clearInterval(interval); //interval if exists some error
-            $('#loading').hide(); // hidden view of loading
-            alert('Error al transferir data'); // message of error
+        error: function(xhr, status, error) {
+            clearInterval(interval); // stop interval if there's an error
+            $('#loading').hide(); // hide loading view
+            alert('Error transferring data: ' + xhr.responseText); // show error message
         }
     });
 }

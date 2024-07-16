@@ -7,6 +7,7 @@ import urllib.parse
 from dotenv import load_dotenv
 from auth.authAltru import authAltru
 from auth.authSalesforce import authSalesforce
+from Events.eventReportData import ReportProcessor
 from Events.eventTransferDataOrganizations import Adapter
 import subprocess
 import os
@@ -57,6 +58,14 @@ token_urls = {
 # List of files with tokens
 token_files = ['altru_token.txt', 'altru_refresh_token.txt', 'salesforce_token.txt', 'salesforce_refresh_token.txt', 'salesforce_instance.txt', 'data.txt', 'finish.txt']
 
+reports_of_sent_data = ["contacts_response", 
+                     "organizations_address_update_response", 
+                     "organizations_response",
+                     "housolds_response",
+                     "organizations_phone_response",
+                     "organizations_address_response",       
+                     "organizations_phone_update_response"]
+
 #List of reports and csv files
 #special_files = ['Veevart Organization Addresses Report test_output.csv', 'Veevart Organization Addresses Report test_response.json', 'Veevart Organization Phones Report test_output.csv', 'Veevart Organization Phones Report test_response.json', 'Veevart Organizations Report test_output.csv', 'Veevart Organizations Report test_response.json', 'Veevart HouseHolds Report test_response.json', 'Veevart HouseHolds Report test_output.csv', 'Veevart Contacts Report test_response.json', 'Veevart Contacts Report test_output.csv', 'Veevart Contacts Report Phones test_response.json', 'Veevart Contacts Report Phones test_output.csv', 'Veevart Contacts Report Email test_response.json', 'Veevart Contacts Report Email test_output.csv', 'Veevart Contacts Report Address test_response.json', 'Veevart Contacts Report Address test_output.csv']
 
@@ -75,6 +84,26 @@ for filename in token_files:
 #return: if the file is empty or not.
 def isEmpty(file):
     return not bool(file.read())
+
+#parameters: 
+#description: generate report of data submitted
+#return: 
+@app.route('/generateReport', methods=['GET'])
+def generateReport():
+    for report in reports_of_sent_data:
+        txt_path = ABS_PATH.format(f'logs/{report}.txt')
+        json_path = ABS_PATH.format(f'logs/{report}.json')
+        csv_path = ABS_PATH.format(f'reports/{report}.csv')
+        # Crear una instancia de ReportProcessor
+        processor = ReportProcessor(txt_path, json_path, csv_path)
+        
+        # Convertir el archivo de texto a JSON
+        processor.convert_to_json()
+        
+        # Generar el reporte y enviar los datos
+        processor.generate_report_send_data(report)
+        
+    return redirect('/')
 
 #parameters: 
 #description: verify if the process to sent data is finished

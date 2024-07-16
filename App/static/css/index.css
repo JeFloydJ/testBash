@@ -119,17 +119,21 @@ h1 {
 }
 
 .text-container {
-    text-align: center; 
+    text-align: center;
 }
 
+/* Header styles */
+.text-container h2 {
+    text-align: center;
+}
 
+/* List styles */
 .text-container ul {
-    list-style-position: inside; 
-    padding-left: 0; 
+    text-align: center;
 }
 
 .text-container li {
-    text-align: left; 
+    text-align: center;
 }
 
 #loading {

@@ -54,12 +54,12 @@ class Adapter:
         for report_name in self.report_names:
             processor = eventDataTransfer.SalesforceProcessor(report_name)  
             processor.process_organizations()
-            # processor.process_households()
-            # self.dic_households_ids = {**self.dic_households_ids, **processor.process_households_ids()}
-            # processor.households_ids = self.dic_households_ids
-            # dic = processor.process_contacts()
-            # self.dic_accounts = {**self.dic_accounts, **dic}
-            # processor.process_contact_address()
+            processor.process_households()
+            self.dic_households_ids = {**self.dic_households_ids, **processor.process_households_ids()}
+            processor.households_ids = self.dic_households_ids
+            dic = processor.process_contacts()
+            self.dic_accounts = {**self.dic_accounts, **dic}
+            processor.process_contact_address()
             # processor.process_contact_relation()
             # processor.process_organization_affilation()
 
