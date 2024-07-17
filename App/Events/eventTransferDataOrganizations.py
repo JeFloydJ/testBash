@@ -10,10 +10,8 @@ from dotenv import load_dotenv
 #                     force=True)
 
 logging.basicConfig(level=logging.INFO,
-                     format='%(asctime)s - %(levelname)s - %(name)s - %(message)s',
-                     force=True, 
-                     filename='out.txt.log',
-                     filemode='w')
+                    format='%(asctime)s - %(levelname)s - %(name)s - %(message)s',
+                    force=True)
 
 
 logger = logging.getLogger(__name__)
@@ -44,12 +42,12 @@ class Adapter:
         self.data_processor = eventProcessData.DataProcessor(base_path)
         self.report_names = report_names
         self.dic_households_ids = {}
-        self.dic_accounts = {}
 
     #parameters: 
     #description: Processes data using the DataProcessor and sends address of contacts information to Salesforce
     #return: sent data
     def process_data(self):
+        global dic_accounts
         #self.data_processor.process_data()
         for report_name in self.report_names:
             processor = eventDataTransfer.SalesforceProcessor(report_name)  
@@ -58,10 +56,11 @@ class Adapter:
             self.dic_households_ids = {**self.dic_households_ids, **processor.process_households_ids()}
             processor.households_ids = self.dic_households_ids
             dic = processor.process_contacts()
-            self.dic_accounts = {**self.dic_accounts, **dic}
-            processor.process_contact_address()
-            # processor.process_contact_relation()
-            # processor.process_organization_affilation()
+            dic_accounts = {**dic_accounts, **dic}
+            processor.process_contact_address(dic_accounts)
+            processor.process_contact_relation()
+            processor.process_organization_affilation()
+
 
 
 

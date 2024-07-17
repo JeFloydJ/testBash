@@ -274,7 +274,7 @@ class SalesforceProcessor:
     #parameters: row with address information of contacts
     #description: sent contacts info to salesforce
     #return: add information in a list for sent
-    def handle_contacts_addresses_report(self, row, dic, counter):
+    def handle_contacts_addresses_report(self, row, dic_accounts, counter):
         lookup_id = row['Lookup ID']
         # print('dic en address', dic)
         addresses_info = {
@@ -283,7 +283,7 @@ class SalesforceProcessor:
             'npsp__MailingState__c': row['Addresses\\State'],
             'npsp__MailingPostalCode__c': row['Addresses\\ZIP'],
             'npsp__MailingCountry__c': row['Addresses\\Country'],
-            'npsp__Household_Account__c': dic[lookup_id],
+            'npsp__Household_Account__c': dic_accounts[lookup_id],
             'npsp__Default_Address__c' : False if row['Addresses\\Primary address'] != 'Yes' else True,
             'vnfp__Implementation_External_ID__c' : str(str(counter)+ '-' + 'contacts-address' + '-' + 'contacts' +row['QUERYRECID'])
             #'Implementation_External_ID__c' : str(str(counter)+ '-' + 'contacts-address' + '-' + 'contacts' +row['QUERYRECID'])
@@ -460,14 +460,14 @@ class SalesforceProcessor:
     #parameters: 
     #description: sent address of contacts information to salesforce
     #return: sent data
-    def process_contact_address(self):
+    def process_contact_address(self, dic_accounts):
         with open(ABS_PATH.format(f'data/{self.report_name}.csv'), 'r', encoding='utf-8-sig') as f:
             counter = 0
             reader = csv.DictReader(f, delimiter=';')
             for row in reader:
                 counter += 1
                 if 'Veevart Contacts Report Address test' == self.report_name:
-                    self.handle_contacts_addresses_report(row, self.contacts_accounts_id, counter)
+                    self.handle_contacts_addresses_report(row, dic_accounts, counter)
 
         if self.contacts_address_list:
             results = self.sf.bulk.npsp__Address__c.upsert(self.contacts_address_list, 'vnfp__Implementation_External_ID__c', batch_size='auto',use_serial=True)  

@@ -21,6 +21,9 @@ error_path = ABS_PATH.format('error.txt')
 if os.path.exists(error_path):
     os.remove(error_path)
 
+# "Veevart Contacts Relationships report test",
+# "Veevart Organizations Relationships report test"
+
 # List of report names with necessary data
 report_names = [
     "Veevart Organizations Report test",
