@@ -1,5 +1,6 @@
 # Import necessary modules
-from flask import Flask, request, render_template, redirect, jsonify
+import zipfile
+from flask import Flask, request, render_template, redirect, jsonify, send_file
 import logging
 import requests
 import csv
@@ -85,15 +86,20 @@ for filename in token_files:
 def isEmpty(file):
     return not bool(file.read())
 
+
 #parameters: 
 #description: generate report of data submitted
 #return: 
 @app.route('/generateReport', methods=['GET'])
 def generateReport():
+    # Crear una lista para almacenar las rutas de todos los archivos CSV generados
+    all_csv_paths = []
+
     for report in reports_of_sent_data:
         txt_path = ABS_PATH.format(f'logs/{report}.txt')
         json_path = ABS_PATH.format(f'logs/{report}.json')
         csv_path = ABS_PATH.format(f'reports/{report}.csv')
+        
         # Crear una instancia de ReportProcessor
         processor = ReportProcessor(txt_path, json_path, csv_path)
         
@@ -103,7 +109,17 @@ def generateReport():
         # Generar el reporte y enviar los datos
         processor.generate_report_send_data(report)
         
-    return redirect('/')
+        # Agregar la ruta del archivo CSV generado a la lista
+        all_csv_paths.append(csv_path)
+
+    # Crear un archivo ZIP que contenga todos los archivos CSV
+    zip_file_path = os.path.join(os.path.dirname(csv_path), 'reports.zip')
+    with zipfile.ZipFile(zip_file_path, 'w') as zip_file:
+        for csv_path in all_csv_paths:
+            zip_file.write(csv_path, os.path.basename(csv_path))
+
+    # Devolver el archivo ZIP como descarga
+    return send_file(zip_file_path, as_attachment=True)
 
 #parameters: 
 #description: verify if the process to sent data is finished

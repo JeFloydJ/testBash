@@ -14,15 +14,17 @@
 <body>
     <div class="login-container">
         {% if transferData %}
-            <div class="text-container">
-                <h2> Transfer Completed </h2>
-                <ul>
-                    <li> Organization (Account) </li>
-                    <li> Household (Account) </li>
-                    <li> Contact </li>
-                </ul>
-                <button class="app-button" onclick="location.href='/generateReport'" > Generate Reports</button>
-            </div>      
+        <div class="text-container">
+            <h2> Transfer Completed </h2>
+            <ul>
+                <li> Organization (Account) </li>
+                <li> Household (Account) </li>
+                <li> Contact </li>
+            </ul>
+            <a href="/generateReport" download>
+                <button class="app-button">Descargar Informes</button>
+            </a>
+        </div>       
         {% elif transferPage and loggedSalesforce %}
         <h1 style="text-align: center">Load CSV App</h1>
         <div class = 'test'>
