@@ -78,7 +78,6 @@ class SalesforceProcessor:
         query = self.sf.query("SELECT Id FROM RecordType WHERE DeveloperName = 'HH_Account' AND IsActive = true")
         Id = query['records'][0]['Id']
         return Id
-    
 
     #parameters: 
     #description: get recordTypeId for organizations in org
@@ -92,7 +91,7 @@ class SalesforceProcessor:
     #description: get number of contacts created today (while the app is running)
     #return: number of contacts
     def get_number_of_contacts(self):
-        ans = self.sf.query_all("SELECT COUNT(Id) FROM Contact WHERE CreatedDate = TODAY")
+        ans = self.sf.query_all("SELECT COUNT(Id) FROM Contact WHERE Auctifera__Implementation_External_ID__c != '' ")
         return ans['records'][0]['expr0']
 
     #parameters: 
@@ -348,6 +347,7 @@ class SalesforceProcessor:
         with open(ABS_PATH.format(f'data/{self.report_name}.csv'), 'r', encoding='utf-8-sig') as f:
             reader = csv.DictReader(f, delimiter=';')
             for row in reader:
+                counter += 1
                 if 'Veevart Organizations Report test' == self.report_name: 
                     self.handle_organizations_report(row)
                 elif 'Veevart Organization Phones Report test' == self.report_name: 
@@ -432,9 +432,13 @@ class SalesforceProcessor:
                     self.contacts_id_list.append(result['id'])
                 
             self.contacts_accounts_id = self.get_account_id()
+
+            with open(ABS_PATH.format(f'logs/query.txt'), 'w') as fq:
+                fq.write(str(self.contacts_accounts_id))
+
             with open(ABS_PATH.format(f'logs/contacts_response.txt'), 'w') as f:
                 f.write(str(results))
-
+   
         if self.contacts_phones_list:
            results = self.sf.bulk.vnfp__Legacy_Data__c.upsert(self.contacts_phones_list, 'vnfp__Implementation_External_ID__c', batch_size='auto',use_serial=True) 
            with open(ABS_PATH.format(f'logs/contacts_phones_response.txt'), 'w') as f:
@@ -464,6 +468,8 @@ class SalesforceProcessor:
         with open(ABS_PATH.format(f'data/{self.report_name}.csv'), 'r', encoding='utf-8-sig') as f:
             counter = 0
             reader = csv.DictReader(f, delimiter=';')
+            with open(ABS_PATH.format(f'logs/queryInAddress.txt'), 'w') as f:
+                f.write(str(dic_accounts))
             for row in reader:
                 counter += 1
                 if 'Veevart Contacts Report Address test' == self.report_name:

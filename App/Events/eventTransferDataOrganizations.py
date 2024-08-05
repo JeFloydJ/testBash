@@ -51,15 +51,17 @@ class Adapter:
         #self.data_processor.process_data()
         for report_name in self.report_names:
             processor = eventDataTransfer.SalesforceProcessor(report_name)  
-            processor.process_organizations()
+            #processor.process_organizations()
             processor.process_households()
             self.dic_households_ids = {**self.dic_households_ids, **processor.process_households_ids()}
             processor.households_ids = self.dic_households_ids
             dic = processor.process_contacts()
             dic_accounts = {**dic_accounts, **dic}
+            with open(ABS_PATH.format(f'logs/queryInAdapter.txt'), 'w') as f:
+                f.write(str(dic_accounts))
             processor.process_contact_address(dic_accounts)
-            processor.process_contact_relation()
-            processor.process_organization_affilation()
+            # processor.process_contact_relation()
+            # processor.process_organization_affilation()
 
 
 
