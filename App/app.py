@@ -59,13 +59,17 @@ token_urls = {
 # List of files with tokens
 token_files = ['altru_token.txt', 'altru_refresh_token.txt', 'salesforce_token.txt', 'salesforce_refresh_token.txt', 'salesforce_instance.txt', 'data.txt', 'finish.txt']
 
-reports_of_sent_data = ["contacts_response", 
-                     "organizations_address_update_response", 
-                     "organizations_response",
-                     "housolds_response",
-                     "organizations_phone_response",
-                     "organizations_address_response",       
-                     "organizations_phone_update_response"]
+reports_of_sent_data = ["Contacts_Contacts_response",
+    "Contacts_address_response",
+    "Contacts_emails_response",
+    "Contacts_phone update_response",
+    "Contacts_phones_response",
+    "Households_HouseHolds_response",
+    "Organizations_Organizations_response",
+    "Organizations_address_response",
+    "Organizations_address_update_response",
+    "Organizations_phones_response",
+    "Organizations_phones_update_response"]
 
 #List of reports and csv files
 #special_files = ['Veevart Organization Addresses Report test_output.csv', 'Veevart Organization Addresses Report test_response.json', 'Veevart Organization Phones Report test_output.csv', 'Veevart Organization Phones Report test_response.json', 'Veevart Organizations Report test_output.csv', 'Veevart Organizations Report test_response.json', 'Veevart HouseHolds Report test_response.json', 'Veevart HouseHolds Report test_output.csv', 'Veevart Contacts Report test_response.json', 'Veevart Contacts Report test_output.csv', 'Veevart Contacts Report Phones test_response.json', 'Veevart Contacts Report Phones test_output.csv', 'Veevart Contacts Report Email test_response.json', 'Veevart Contacts Report Email test_output.csv', 'Veevart Contacts Report Address test_response.json', 'Veevart Contacts Report Address test_output.csv']

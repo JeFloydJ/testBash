@@ -50,6 +50,7 @@ class SalesforceProcessor:
         self.valid_check = {}
         self.contacts_relations = []
         self.organizations_affilations = []
+        self.contacts_address_update = []
 
         #read token for make request in salesforce
         with open(ABS_PATH.format('salesforce_token.txt')) as f:
@@ -282,13 +283,13 @@ class SalesforceProcessor:
             'npsp__MailingState__c': row['Addresses\\State'],
             'npsp__MailingPostalCode__c': row['Addresses\\ZIP'],
             'npsp__MailingCountry__c': row['Addresses\\Country'],
-            'npsp__Household_Account__c': dic_accounts[lookup_id],
+            #'npsp__Household_Account__c': dic_accounts[lookup_id],
             'npsp__Default_Address__c' : False if row['Addresses\\Primary address'] != 'Yes' else True,
             'vnfp__Implementation_External_ID__c' : str(str(counter)+ '-' + 'contacts-address' + '-' + 'contacts' +row['QUERYRECID'])
             #'Implementation_External_ID__c' : str(str(counter)+ '-' + 'contacts-address' + '-' + 'contacts' +row['QUERYRECID'])
         }
-        # if lookup_id in dic:
-        #     addresses_info['npsp__Household_Account__c'] = [row['Lookup ID']]
+        if lookup_id in dic_accounts:
+            addresses_info['npsp__Household_Account__c'] = dic_accounts[lookup_id]
 
         self.contacts_address_list.append(addresses_info)
 
@@ -317,6 +318,7 @@ class SalesforceProcessor:
             self.contacts_act_email.append(new_info)       
             self.valid_check[row['Lookup ID']] = True
     
+
     def handler_contacts_relationship(self, row):
         lookup_id = row['Lookup ID']
         new_info = {
@@ -356,31 +358,8 @@ class SalesforceProcessor:
                 elif 'Veevart Organization Addresses Report test' == self.report_name:
                     self.handle_organization_addresses_report(row,counter)
                     self.handler_update_address_organization(row)
-  
-        if self.account_list:
-            results = self.sf.bulk.Account.upsert(self.account_list, 'Auctifera__Implementation_External_ID__c', batch_size='auto',use_serial=True)  
-            with open(ABS_PATH.format(f'logs/organizations_response.txt'), 'w') as f:
-                f.write(str(results))
-                
-        if self.phone_list:
-            results = self.sf.bulk.vnfp__Legacy_Data__c.upsert(self.phone_list, 'vnfp__Implementation_External_ID__c', batch_size='auto',use_serial=True)
-            with open(ABS_PATH.format(f'logs/organizations_phone_response.txt'), 'w') as f:
-                f.write(str(results))
-            
-        if self.address_list:
-            results = self.sf.bulk.npsp__Address__c.upsert(self.address_list, 'vnfp__Implementation_External_ID__c', batch_size='auto',use_serial=True)
-            with open(ABS_PATH.format(f'logs/organizations_address_response.txt'), 'w') as f:
-                f.write(str(results))
 
-        if self.phone_act_list:
-            results = self.sf.bulk.Account.upsert(self.phone_act_list, 'Auctifera__Implementation_External_ID__c', batch_size='auto',use_serial=True)
-            with open(ABS_PATH.format(f'logs/organizations_phone_update_response.txt'), 'w') as f:
-                f.write(str(results))            
-
-        if self.address_act_list:
-            results = self.sf.bulk.Account.upsert(self.address_act_list, 'Auctifera__Implementation_External_ID__c', batch_size='auto',use_serial=True) 
-            with open(ABS_PATH.format(f'logs/organizations_address_update_response.txt'), 'w') as f:
-                f.write(str(results))
+        return self.account_list, self.phone_list, self.address_list, self.phone_act_list, self.address_act_list
 
     #parameters: 
     #description: sent households information to salesforce
@@ -392,13 +371,9 @@ class SalesforceProcessor:
             for row in reader:
                 counter += 1
                 if 'Veevart HouseHolds Report test' == self.report_name:
-                    self.handler_households(row, counter)
-                
-        if self.houseHolds_list:
-            results = self.sf.bulk.Account.upsert(self.houseHolds_list, 'Auctifera__Implementation_External_ID__c', batch_size='auto',use_serial=True)
-            with open(ABS_PATH.format(f'logs/housolds_response.txt'), 'w') as f:
-                f.write(str(results))        
-        return self.houseHolds_external_ids_list
+                    self.handler_households(row, counter)      
+        return self.houseHolds_external_ids_list, self.houseHolds_list
+
 
     #parameters: 
     #description: sent households information to salesforce
@@ -433,37 +408,11 @@ class SalesforceProcessor:
                 
             self.contacts_accounts_id = self.get_account_id()
 
-            with open(ABS_PATH.format(f'logs/query.txt'), 'w') as fq:
-                fq.write(str(self.contacts_accounts_id))
+        return self.contacts_accounts_id, self.contacts_list, self.contacts_phones_list, self.contacts_emails_list, self.contacts_act_phone, self.contacts_act_email
 
-            with open(ABS_PATH.format(f'logs/contacts_response.txt'), 'w') as f:
-                f.write(str(results))
-   
-        if self.contacts_phones_list:
-           results = self.sf.bulk.vnfp__Legacy_Data__c.upsert(self.contacts_phones_list, 'vnfp__Implementation_External_ID__c', batch_size='auto',use_serial=True) 
-           with open(ABS_PATH.format(f'logs/contacts_phones_response.txt'), 'w') as f:
-               f.write(str(results))
-        
-        if self.contacts_emails_list:
-            results = self.sf.bulk.vnfp__Legacy_Data__c.upsert(self.contacts_emails_list, 'vnfp__Implementation_External_ID__c', batch_size='auto',use_serial=True) 
-            with open(ABS_PATH.format(f'logs/contacts_emails_response.txt'), 'w') as f:
-                f.write(str(results))
-
-        if self.contacts_act_phone:
-            results = self.sf.bulk.Contact.upsert(self.contacts_act_phone, 'Auctifera__Implementation_External_ID__c', batch_size='auto',use_serial=True)
-            with open(ABS_PATH.format(f'logs/contacts_phones_update_response.txt'), 'w') as f:
-                f.write(str(results))
-
-        if self.contacts_act_email:
-            results = self.sf.bulk.Contact.upsert(self.contacts_act_email, 'Auctifera__Implementation_External_ID__c', batch_size='auto',use_serial=True)
-            with open(ABS_PATH.format(f'logs/contacts_address_update_response.txt'), 'w') as f:
-                f.write(str(results))
-                
-        return self.contacts_accounts_id
-
-    #parameters: 
-    #description: sent address of contacts information to salesforce
-    #return: sent data
+    # #parameters: 
+    # #description: sent address of contacts information to salesforce
+    # #return: sent data
     def process_contact_address(self, dic_accounts):
         with open(ABS_PATH.format(f'data/{self.report_name}.csv'), 'r', encoding='utf-8-sig') as f:
             counter = 0
@@ -475,34 +424,31 @@ class SalesforceProcessor:
                 if 'Veevart Contacts Report Address test' == self.report_name:
                     self.handle_contacts_addresses_report(row, dic_accounts, counter)
 
-        if self.contacts_address_list:
-            results = self.sf.bulk.npsp__Address__c.upsert(self.contacts_address_list, 'vnfp__Implementation_External_ID__c', batch_size='auto',use_serial=True)  
-            with open(ABS_PATH.format(f'logs/contacts_address_response.txt'), 'w') as f:
-                f.write(str(results))
+        return self.contacts_address_list
 
-    def process_contact_relation(self):
-        with open(ABS_PATH.format(f'data/{self.report_name}.csv'), 'r', encoding='utf-8-sig') as f:
-            reader = csv.DictReader(f, delimiter=';')
-            for row in reader:
-                if 'Veevart Contacts Relationships report test' == self.report_name:
-                    self.handler_contacts_relationship(row)
+    # def process_contact_relation(self):
+    #     with open(ABS_PATH.format(f'data/{self.report_name}.csv'), 'r', encoding='utf-8-sig') as f:
+    #         reader = csv.DictReader(f, delimiter=';')
+    #         for row in reader:
+    #             if 'Veevart Contacts Relationships report test' == self.report_name:
+    #                 self.handler_contacts_relationship(row)
                     
-        if self.contacts_relations:
-           results = self.sf.bulk.npe4__Relationship__c.upsert(self.contacts_relations, 'vnfp__Implementation_External_ID__c', batch_size='auto',use_serial=True)
-           with open(ABS_PATH.format(f'logs/contacts_relationship_response.txt'), 'w') as f:
-               f.write(str(results))
+    #     if self.contacts_relations:
+    #        results = self.sf.bulk.npe4__Relationship__c.upsert(self.contacts_relations, 'vnfp__Implementation_External_ID__c', batch_size='auto',use_serial=True)
+    #        with open(ABS_PATH.format(f'logs/contacts_relationship_response.txt'), 'w') as f:
+    #            f.write(str(results))
     
-    def process_organization_affilation(self):
-        with open(ABS_PATH.format(f'data/{self.report_name}.csv'), 'r', encoding='utf-8-sig') as f:
-            reader = csv.DictReader(f, delimiter=';')
-            for row in reader:
-                if 'Veevart Organizations Relationships report test' == self.report_name:
-                    self.handler_organization_affilation(row)
+    # def process_organization_affilation(self):
+    #     with open(ABS_PATH.format(f'data/{self.report_name}.csv'), 'r', encoding='utf-8-sig') as f:
+    #         reader = csv.DictReader(f, delimiter=';')
+    #         for row in reader:
+    #             if 'Veevart Organizations Relationships report test' == self.report_name:
+    #                 self.handler_organization_affilation(row)
                 
-        if self.organizations_affilations:
-             results = self.sf.bulk.npe5__Affiliation__c.upsert(self.organizations_affilations , 'vnfp__Implementation_External_ID__c', batch_size='auto',use_serial=True)
-             with open(ABS_PATH.format(f'logs/organizations_affiliation_response.txt'), 'w') as f:
-                 f.write(str(results))
+    #     if self.organizations_affilations:
+    #          results = self.sf.bulk.npe5__Affiliation__c.upsert(self.organizations_affilations , 'vnfp__Implementation_External_ID__c', batch_size='auto',use_serial=True)
+    #          with open(ABS_PATH.format(f'logs/organizations_affiliation_response.txt'), 'w') as f:
+    #              f.write(str(results))
 
 # report_names = ["Veevart Organizations Report test","Veevart Organization Addresses Report test", "Veevart Organization Phones Report test", "Veevart HouseHolds Report test", "Veevart Contacts Report test", "Veevart Contacts Report Address test", "Veevart Contacts Report Email test", "Veevart Contacts Report Phones test","Veevart Contacts Relationships report test", "Veevart Organizations Relationships report test"]
 # dic_accounts = {}

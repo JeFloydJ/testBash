@@ -25,18 +25,30 @@ if os.path.exists(error_path):
 # "Veevart Organizations Relationships report test"
 
 # List of report names with necessary data
+# report_names = [
+#     "Veevart Organizations Report test",
+#     "Veevart Organization Addresses Report test",
+#     "Veevart Organization Phones Report test",
+#     "Veevart HouseHolds Report test",
+#     "Veevart Contacts Report test",
+#     "Veevart Contacts Report Address test",
+#     "Veevart Contacts Report Email test",
+#     "Veevart Contacts Report Phones test",
+#     "Veevart Contacts Relationships report test",
+#     "Veevart Organizations Relationships report test"
+# ]
+
 report_names = [
-    "Veevart Organizations Report test",
-    "Veevart Organization Addresses Report test",
-    "Veevart Organization Phones Report test",
-    "Veevart HouseHolds Report test",
-    "Veevart Contacts Report test",
-    "Veevart Contacts Report Address test",
-    "Veevart Contacts Report Email test",
-    "Veevart Contacts Report Phones test",
-    "Veevart Contacts Relationships report test",
-    "Veevart Organizations Relationships report test"
+     "Veevart Organizations Report test",
+     "Veevart Organization Addresses Report test",
+     "Veevart Organization Phones Report test",
+     "Veevart HouseHolds Report test",
+     "Veevart Contacts Report test",
+     "Veevart Contacts Report Email test",
+     "Veevart Contacts Report Phones test",
+     "Veevart Contacts Report Address test"
 ]
+
 
 # Create an instance of the Adapter class
 adapter = Adapter(report_names)
